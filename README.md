@@ -1,1 +1,1 @@
-# bert-text-classification
+# BERT fine-tune for text classification
