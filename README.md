@@ -11,7 +11,10 @@ What you can do with this repo:
 - Run experiments with multiple random seeds.
 - Easily adapt it to your own experiments, with minimal changes. 
 
-You know this code will be good because it was written by [someone](https://jasonwei20.github.io/) with two whole summers of software engineering experience.
-
 To do:
 - Consistency training with [UDA](https://github.com/SanghunYun/UDA_pytorch)
+
+You know this code will be good because it was written by [someone](https://jasonwei20.github.io/) with two whole summers of software engineering experience.
+
+Want more?
+- Chris McCormick has a [good tutorial](https://mccormickml.com/2019/07/22/BERT-fine-tuning/)
