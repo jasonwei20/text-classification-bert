@@ -1,4 +1,8 @@
 {
-    "seed": 0,
-    "train_path": "data/sst2/train.txt"
+    "seed_num": 0,
+    "train_path": "data/sst2/train.txt",
+    "test_path": "data/sst2/test.txt",
+    "num_output_classes": 2,
+    "num_epochs": 10,
+    "train_subset": 50
 }

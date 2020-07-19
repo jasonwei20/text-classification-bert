@@ -6,15 +6,17 @@ Easily train a text classifier with pre-trained BERT, and then adapt it to your 
 
 What you can do with this repo:
 - Fine-tune BERT for your downstream text classification task.
-- Plot training and validation loss and accuracy.
+- Plot training loss and validation accuracy.
 - Run experiments for using subsets of your data.
-- Run experiments with multiple random seeds.
 - Easily adapt it to your own experiments, with minimal changes. 
 
+This code is beautiful. It's written to the perfect level of abstraction for the amateur NLP researcher. In fact, I wouldn't even call it code. It's *poetry*. 
+
 To do:
+- Get rid of annoying error log.
+- Run experiments with multiple random seeds.
 - Consistency training with [UDA](https://github.com/SanghunYun/UDA_pytorch)
 
 You know this code will be good because it was written by [someone](https://jasonwei20.github.io/) with two whole summers of software engineering experience.
 
-Want more?
-- Chris McCormick has a [good tutorial](https://mccormickml.com/2019/07/22/BERT-fine-tuning/)
+Thanks [Chris McCormick](https://mccormickml.com/2019/07/22/BERT-fine-tuning/) for the tutorial for which this code is mostly from. 

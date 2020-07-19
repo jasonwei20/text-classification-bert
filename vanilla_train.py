@@ -1,75 +1,125 @@
+import numpy as np
+from sklearn.metrics import accuracy_score
 import torch
-from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
-from torch.utils.data import TensorDataset
-from transformers import BertTokenizer, BertForSequenceClassification
+from transformers import BertForSequenceClassification
 from transformers import BertConfig, AdamW
-from utils import common, configuration
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
+from transformers import get_linear_schedule_with_warmup
+from tqdm import tqdm
+from utils import common, configuration, dataloader, utils_torch, visualization
 
-# load the dataset
-def get_dataloader(
-    path, 
+def initialize_model(
     cfg,
-    ):
+    train_dataloader,
+):
     
-    sentences, labels = common.get_sentences_and_labels_from_txt(path)
-    input_id_list = []; attention_mask_list = []
+    model = BertForSequenceClassification.from_pretrained(
+        "bert-base-uncased",
+        num_labels = cfg.num_output_classes, 
+        output_attentions = False,
+        output_hidden_states = False,
+    )
+    
+    model.cuda(); print('\n\n')
 
-    for sentence in sentences[:96]:
+    optimizer = AdamW(model.parameters(), lr = 2e-5)
 
-        encoding_dictionary = tokenizer(
-            sentence, 
-            max_length = cfg.max_length,
-            padding = 'max_length',
-            return_tensors = 'pt',
-        )
-
-        input_ids = encoding_dictionary['input_ids']
-        attention_mask = encoding_dictionary['attention_mask']
-        input_id_list.append(input_ids)
-        attention_mask_list.append(attention_mask)
-
-    input_ids_torch = torch.cat(input_id_list, dim=0)
-    attention_masks_torch = torch.cat(attention_mask_list, dim=0)
-    labels_torch = torch.tensor(labels[:96])
-
-    dataset = TensorDataset(input_ids_torch, attention_masks_torch, labels_torch)
-
-    dataloader = DataLoader(
-        dataset, 
-        sampler = RandomSampler(dataset), 
-        batch_size = cfg.batch_size,
+    scheduler = get_linear_schedule_with_warmup(
+        optimizer, 
+        num_warmup_steps = 0,
+        num_training_steps = len(train_dataloader) * cfg.num_epochs
     )
 
-    return dataloader
+    device = utils_torch.get_device()
 
-# train the model
-def finetune_bert(
-    train_dataloader,
-    ):
+    return model, optimizer, scheduler, device
 
-    device = torch.device("cuda")
-    print(torch.cuda.get_device_name(0))
+def evaluate_model(
+    model,
+    device,
+    test_dataloader,
+):
+    model.eval()
+    
+    val_preds_list = []; val_gt_list = []
 
-    for mb_num, mb in enumerate(train_dataloader):
+    for mb in test_dataloader:
+
         input_ids = mb[0].to(device)
         input_mask = mb[1].to(device)
         labels = mb[2].to(device)
 
-        print(mb_num, input_ids.shape, input_mask.shape, labels.shape)
-        
-#     model = BertForSequenceClassification.from_pretrained(
-#         "bert-base-uncased",
-#         num_labels = 2, # The number of output labels--2 for binary classification.
-#                         # You can increase this for multi-class tasks.   
-#         output_attentions = False, # Whether the model returns attentions weights.
-#         output_hidden_states = False, # Whether the model returns all hidden-states.
-#     )
+        with torch.no_grad():
 
-#     model.cuda()
+            val_loss, logits = model(input_ids, attention_mask=input_mask, labels=labels)
+            val_confs, val_preds = torch.max(logits, dim=1)
+
+            val_preds = val_preds.detach().cpu().numpy()
+            val_gt = labels.to('cpu').numpy()
+            val_preds_list.append(val_preds)
+            val_gt_list.append(val_gt)
+
+    val_preds_all = np.concatenate(val_preds_list, axis=None)
+    val_gt_all = np.concatenate(val_gt_list, axis=None)
+    val_acc = accuracy_score(val_gt_all, val_preds_all)
+
+    return val_acc
+
+def finetune_bert(
+    cfg,
+    train_dataloader,
+    test_dataloader,
+):
+
+    model, optimizer, scheduler, device = initialize_model(cfg, train_dataloader)
+    train_loss_list = []; val_acc_list = []
+
+    for epoch_num in range(1, cfg.num_epochs + 1):
+
+        model.train()
+        iter_bar = tqdm(train_dataloader)
+
+        for mb_num, mb in enumerate(iter_bar):
+
+            input_ids = mb[0].to(device)
+            input_mask = mb[1].to(device)
+            labels = mb[2].to(device)
+
+            model.zero_grad()
+            train_loss, logits = model(input_ids, attention_mask=input_mask, labels=labels)
+            train_confs, train_preds = torch.max(logits, dim=1)
+
+            train_loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+
+            optimizer.step()
+            scheduler.step()
+
+            mb_train_acc = accuracy_score(labels.cpu(), train_preds.cpu())
+            val_acc = evaluate_model(model, device, test_dataloader)
+
+            iter_bar_str =  (f"epoch {epoch_num}/{cfg.num_epochs}, " 
+                            + f"mb {mb_num + 1}/{len(iter_bar)}: " 
+                            + f"mb_train_loss={float(train_loss):.4f}, "  
+                            + f"mb_train_acc={float(mb_train_acc):.3f}, "  
+                            + f"val_acc={float(val_acc):.3f}")
+            iter_bar.set_description(iter_bar_str)
+
+            train_loss_list.append(train_loss); val_acc_list.append(val_acc)
+    
+    visualization.plot_jasons_lineplot(None, train_loss_list, 'updates', 'training loss', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset}", f"plots/{cfg.train_path.split('/')[-2]}_train_loss_{cfg.train_subset}.png")
+    visualization.plot_jasons_lineplot(None, val_acc_list, 'updates', 'validation acc', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset} max_val_acc={max(val_acc_list):.4f}", f"plots/{cfg.train_path.split('/')[-2]}_val_acc_{cfg.train_subset}.png")
 
 if __name__ == "__main__":
 
-    cfg = configuration.config.from_json("config/sst2.json")
-    train_dataloader = get_dataloader(cfg.train_path, cfg)
-    finetune_bert(train_dataloader)
+    cfg_json = "config/sst2.json"
+    cfg = configuration.config.from_json(cfg_json)
+    common.set_random_seed(cfg.seed_num)
+
+    train_dataloader = dataloader.get_train_dataloader(cfg)
+    test_dataloader = dataloader.get_test_dataloader(cfg)
+
+    finetune_bert(
+        cfg,
+        train_dataloader,
+        test_dataloader,
+    )
