@@ -9,6 +9,11 @@ What you can do with this repo:
 - Run experiments for using subsets of your data.
 - Easily adapt it to your own experiments, with minimal changes. 
 
+## Experiments
+```
+python main.py
+```
+
 If you open an issue before September 31, I will reply.
 
 This code is absolutely beautiful. It's written to the perfect level of abstraction for the amateur NLP researcher. In fact, I wouldn't even call it code. It's *poetry*. 
@@ -19,6 +24,7 @@ pip install pytorch transformers matplotlib sklearn
 ```
 
 ## To do
+- Add where to get data from
 - Support multiple GPUs.
 - Support experiments with multiple random seeds.
 - Get rid of annoying warning log (I know that you have to train BertForSequenceClassification).
