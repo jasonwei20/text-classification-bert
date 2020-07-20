@@ -64,7 +64,7 @@ def evaluate_model(
 
     return val_acc
 
-def finetune_bert(
+def vanilla_finetune_bert(
     cfg,
     train_dataloader,
     test_dataloader,
@@ -107,19 +107,4 @@ def finetune_bert(
             train_loss_list.append(train_loss); val_acc_list.append(val_acc)
     
     visualization.plot_jasons_lineplot(None, train_loss_list, 'updates', 'training loss', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset}", f"plots/{cfg.train_path.split('/')[-2]}_train_loss_{cfg.train_subset}.png")
-    visualization.plot_jasons_lineplot(None, val_acc_list, 'updates', 'validation acc', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset} max_val_acc={max(val_acc_list):.4f}", f"plots/{cfg.train_path.split('/')[-2]}_val_acc_{cfg.train_subset}.png")
-
-if __name__ == "__main__":
-
-    cfg_json = "config/sst2.json"
-    cfg = configuration.config.from_json(cfg_json)
-    common.set_random_seed(cfg.seed_num)
-
-    train_dataloader = dataloader.get_train_dataloader(cfg)
-    test_dataloader = dataloader.get_test_dataloader(cfg)
-
-    finetune_bert(
-        cfg,
-        train_dataloader,
-        test_dataloader,
-    )
+    visualization.plot_jasons_lineplot(None, val_acc_list, 'updates', 'validation accuracy', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset} max_val_acc={max(val_acc_list):.3f}", f"plots/{cfg.train_path.split('/')[-2]}_val_acc_{cfg.train_subset}_seed{cfg.seed_num}.png")

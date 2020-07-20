@@ -3,6 +3,6 @@
     "train_path": "data/sst2/train.txt",
     "test_path": "data/sst2/test.txt",
     "num_output_classes": 2,
-    "num_epochs": 10,
+    "num_epochs": 50,
     "train_subset": 50
 }

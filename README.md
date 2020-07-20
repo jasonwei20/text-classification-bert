@@ -10,11 +10,12 @@ What you can do with this repo:
 - Run experiments for using subsets of your data.
 - Easily adapt it to your own experiments, with minimal changes. 
 
-This code is beautiful. It's written to the perfect level of abstraction for the amateur NLP researcher. In fact, I wouldn't even call it code. It's *poetry*. 
+This code is absolutely beautiful. It's written to the perfect level of abstraction for the amateur NLP researcher. In fact, I wouldn't even call it code. It's *poetry*. 
 
 To do:
-- Get rid of annoying error log.
-- Run experiments with multiple random seeds.
+- Support multiple GPUs.
+- Support experiments with multiple random seeds.
+- Get rid of annoying warning log (I know that you have to train BertForSequenceClassification).
 - Consistency training with [UDA](https://github.com/SanghunYun/UDA_pytorch)
 
 You know this code will be good because it was written by [someone](https://jasonwei20.github.io/) with two whole summers of software engineering experience.

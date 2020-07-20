@@ -1,10 +1,11 @@
 import json
-from typing import NamedTuple
+from typing import List, NamedTuple
 
 class config(NamedTuple):
 
     seed_num: int = 0
 
+    #dataset params
     train_path: str = None
     test_path: str = None
     num_output_classes: int = None
