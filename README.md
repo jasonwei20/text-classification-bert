@@ -9,6 +9,12 @@ What you can do with this repo:
 - Run experiments for using subsets of your data.
 - Easily adapt it to your own experiments, with minimal changes. 
 
+| Method | SST-2 | SUBJ | 
+|--------|-------|------|
+| CNN (Yoon Kim 2014) | 88.1 | 93.2 | 
+| **BERT fine-tune (this repo)** | 92.2 | 97.4 |
+| **BERT-Large reported on Glue (Jacob Devlin) | 94.9 | -- |
+
 ## Experiments
 ```
 python main.py
