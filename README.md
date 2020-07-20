@@ -1,7 +1,6 @@
 # BERT Fine-Tune for Text Classification, Optimized for Adaptablity
 
 Fine-tuning BERT for text-classification with [BERTForSequenceClassification](https://huggingface.co/transformers/model_doc/bert.html) from HuggingFace.
-
 Easily train a text classifier with pre-trained BERT, and then adapt it to your experiments!
 
 What you can do with this repo:
@@ -10,9 +9,16 @@ What you can do with this repo:
 - Run experiments for using subsets of your data.
 - Easily adapt it to your own experiments, with minimal changes. 
 
+If you open an issue before September 31, I will reply.
+
 This code is absolutely beautiful. It's written to the perfect level of abstraction for the amateur NLP researcher. In fact, I wouldn't even call it code. It's *poetry*. 
 
-To do:
+## Dependencies
+```
+pip install pytorch transformers matplotlib sklearn
+```
+
+## To do
 - Support multiple GPUs.
 - Support experiments with multiple random seeds.
 - Get rid of annoying warning log (I know that you have to train BertForSequenceClassification).
