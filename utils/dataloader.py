@@ -7,6 +7,7 @@ from utils import common, configuration
 from transformers import BertTokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
+#refactor this
 def get_tensor_dataset(sentences, labels, cfg):
 
     encoding_dictionary = tokenizer(
@@ -61,8 +62,9 @@ def get_train_uda_dataloader(cfg):
     
     sentences, labels = common.get_sentences_and_labels_from_txt(cfg.train_path)
     sentences, labels = shuffle(sentences, labels, random_state = cfg.seed_num)
-    train_sentences, ul_sentences, train_labels, ul_labels = train_test_split(sentences, labels, train_size = cfg.train_subset, random_state=cfg.seed_num, stratify=labels) 
-    
+    train_sentences, ul_orig_sentences, train_labels, ul_labels = train_test_split(sentences, labels, train_size = cfg.train_subset, random_state=cfg.seed_num, stratify=labels) 
+    #get augmented sentences
+
     train_dataset = get_tensor_dataset(train_sentences, train_labels, cfg)
     train_dataloader = DataLoader(
         train_dataset, 
@@ -70,6 +72,7 @@ def get_train_uda_dataloader(cfg):
         batch_size = cfg.uda_train_batch_size,
     )
 
+    #redo this:
     ul_dataset = get_tensor_dataset(ul_sentences, ul_labels, cfg)
     ul_dataloader = DataLoader(
         ul_dataset, 
