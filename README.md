@@ -9,7 +9,7 @@ Train a text classifier with pre-trained BERT, and then easily adapt it new expe
 | **This repo: BERT-base w/o hyperparameter tuning** | 93.0 | 97.6 | 98.0 | 
 | BERT: 24-layers, 16 heads, 1024-hidden [from GLUE](https://gluebenchmark.com/leaderboard) | 94.9 | -- | -- |
 
-![alt text](readme_images/sentence_classification.jpeg)
+![alt text](readme_images/sentence_classification.png)
 
 What you can do with this repo:
 - Fine-tune BERT for your downstream text classification task.
