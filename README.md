@@ -40,4 +40,4 @@ pip install pytorch transformers matplotlib sklearn
 
 You know this code will be good because it was written by [someone](https://jasonwei20.github.io/) with two whole summers of software engineering experience.
 
-Thanks [Chris McCormick](https://mccormickml.com/2019/07/22/BERT-fine-tuning/) for the tutorial for which this code is mostly from. 
+Thanks [Chris McCormick](https://mccormickml.com/2019/07/22/BERT-fine-tuning/) for the tutorial for which the vanilla fine-tune code is mostly from, and [SanghunYun](https://github.com/SanghunYun/UDA_pytorch) for the UDA code.

@@ -20,3 +20,8 @@ def get_sentences_and_labels_from_txt(dataset_path):
         sentences.append(sentence)
         labels.append(label)
     return sentences, labels
+
+def repeat_dataloader(iterable):
+    while True:
+        for x in iterable:
+            yield x

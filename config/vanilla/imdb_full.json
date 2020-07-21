@@ -1,5 +1,5 @@
 {
-    "exp_id": "imdb_50_vanilla",
+    "exp_id": "imdb_full_vanilla",
     "train_path": "data/imdb/train.txt",
     "test_path": "data/imdb/test.txt",
     "num_output_classes": 2,
