@@ -1,13 +1,13 @@
-# BERT Fine-Tune for Text Classification, Optimized for Adaptablity
+# BERT Fine-Tune for Text Classification
 
-Fine-tuning BERT for text-classification with [BERTForSequenceClassification](https://huggingface.co/transformers/model_doc/bert.html) from HuggingFace.
-Easily train a text classifier with pre-trained BERT, and then adapt it to your experiments!
+Fine-tune BERT for text classification with [BERTForSequenceClassification](https://huggingface.co/transformers/model_doc/bert.html).
+Train a text classifier with pre-trained BERT, and then easily adapt it new experiments!
 
-| Method | SST-2 | SUBJ | 
-|--------|-------|------|
-| CNN [(Yoon Kim 2014)](https://arxiv.org/pdf/1408.5882.pdf) | 88.1 | 93.2 | 
-| **BERT-base fine-tune without hyperparameter tuning (this repo)** | 92.2 | 97.4 |
-| **BERT: 24-layers, 16 heads, 1024-hidden [reported on GLUE](https://gluebenchmark.com/leaderboard) | 94.9 | -- |
+| Method | SST-2 | SUBJ | TREC |
+|--------|-------|------|------|
+| CNN [(Yoon Kim, 2014)](https://arxiv.org/pdf/1408.5882.pdf) | 88.1 | 93.2 | 93.6 | 
+| **This repo: BERT-base w/o hyperparameter tuning** | 92.2 | 97.4 |
+| BERT: 24-layers, 16 heads, 1024-hidden [from GLUE](https://gluebenchmark.com/leaderboard) | 94.9 | -- | -- |
 
 What you can do with this repo:
 - Fine-tune BERT for your downstream text classification task.
@@ -30,7 +30,9 @@ pip install pytorch transformers matplotlib sklearn
 ```
 
 ## To do
-- Add where to get data from
+- Understand what's going on with the learning rate.
+- Add saving and loading models.
+- Add where to get data from.
 - Support multiple GPUs.
 - Support experiments with multiple random seeds.
 - Get rid of annoying warning log (I know that you have to train BertForSequenceClassification).

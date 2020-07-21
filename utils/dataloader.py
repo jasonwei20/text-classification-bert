@@ -39,7 +39,10 @@ def get_train_dataloader(cfg):
 def get_test_dataloader(cfg):
     
     sentences, labels = common.get_sentences_and_labels_from_txt(cfg.test_path)
-    input_id_list = []; attention_mask_list = []
+    sentences, labels = shuffle(sentences, labels, random_state = cfg.seed_num)
+    if cfg.val_subset:
+        sentences, _, labels, _ = train_test_split(sentences, labels, train_size = cfg.val_subset, random_state=cfg.seed_num, stratify=labels) 
+    
 
     encoding_dictionary = tokenizer(
         sentences, 

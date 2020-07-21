@@ -1,5 +1,5 @@
 {
-    "seed_num": 0,
+    "exp_id": "sst2_full_vanilla",
     "train_path": "data/sst2/train.txt",
     "test_path": "data/sst2/test.txt",
     "num_output_classes": 2,

@@ -1,9 +1,18 @@
 from utils import common, configuration, dataloader
-import vanilla_train
+import bert
 
 if __name__ == "__main__":
 
-    cfg_json_list = ["config/subj_full.json", "config/subj_50.json", "config/sst2_full.json", "config/sst2_50.json"]
+    cfg_json_list = [
+        "config/vanilla/trec_50.json",
+        "config/vanilla/trec_full.json",
+        "config/vanilla/imdb_50.json",
+        "config/vanilla/imdb_full.json",
+        "config/vanilla/sst2_50.json",
+        "config/vanilla/sst2_full.json",
+        "config/vanilla/subj_50.json",
+        "config/vanilla/subj_full.json",
+        ]
 
     for cfg_json in cfg_json_list:
 
@@ -13,7 +22,7 @@ if __name__ == "__main__":
         train_dataloader = dataloader.get_train_dataloader(cfg)
         test_dataloader = dataloader.get_test_dataloader(cfg)
 
-        vanilla_train.vanilla_finetune_bert(
+        bert.vanilla_finetune_bert(
             cfg,
             train_dataloader,
             test_dataloader,

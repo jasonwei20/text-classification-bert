@@ -1,5 +1,5 @@
 {
-    "seed_num": 0,
+    "exp_id": "subj_50_vanilla",
     "train_path": "data/subj/train.txt",
     "test_path": "data/subj/test.txt",
     "num_output_classes": 2,

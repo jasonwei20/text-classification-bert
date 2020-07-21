@@ -1,0 +1,10 @@
+{
+    "exp_id": "imdb_50_vanilla",
+    "train_path": "data/imdb/train.txt",
+    "test_path": "data/imdb/test.txt",
+    "num_output_classes": 2,
+    "num_epochs": 50,
+    "train_subset": 50,
+    "val_subset": 2000,
+    "max_length": 128
+}

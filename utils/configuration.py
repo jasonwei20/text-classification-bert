@@ -3,6 +3,7 @@ from typing import List, NamedTuple
 
 class config(NamedTuple):
 
+    exp_id: str = None
     seed_num: int = 0
 
     #dataset params
@@ -15,6 +16,7 @@ class config(NamedTuple):
 
     # training params
     train_subset: int = None
+    val_subset: int = None
     batch_size: int = 32
     num_epochs: int = 4
 

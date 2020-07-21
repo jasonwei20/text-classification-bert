@@ -1,0 +1,7 @@
+{
+    "exp_id": "trec_full_vanilla",
+    "train_path": "data/trec/train.txt",
+    "test_path": "data/trec/test.txt",
+    "num_output_classes": 6,
+    "num_epochs": 50
+}

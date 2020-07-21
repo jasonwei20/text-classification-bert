@@ -1,3 +1,4 @@
+from pathlib import Path
 import numpy as np
 from sklearn.metrics import accuracy_score
 import torch
@@ -106,5 +107,6 @@ def vanilla_finetune_bert(
 
             train_loss_list.append(train_loss); val_acc_list.append(val_acc)
     
-    visualization.plot_jasons_lineplot(None, train_loss_list, 'updates', 'training loss', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset}", f"plots/{cfg.train_path.split('/')[-2]}_train_loss_{cfg.train_subset}.png")
-    visualization.plot_jasons_lineplot(None, val_acc_list, 'updates', 'validation accuracy', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset} max_val_acc={max(val_acc_list):.3f}", f"plots/{cfg.train_path.split('/')[-2]}_val_acc_{cfg.train_subset}_seed{cfg.seed_num}.png")
+    Path(f"plots/{cfg.exp_id}").mkdir(parents=True, exist_ok=True)
+    visualization.plot_jasons_lineplot(None, train_loss_list, 'updates', 'training loss', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset}", f"plots/{cfg.exp_id}/train_loss.png")
+    visualization.plot_jasons_lineplot(None, val_acc_list, 'updates', 'validation accuracy', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset} max_val_acc={max(val_acc_list):.3f}", f"plots/{cfg.exp_id}/val_acc.png")
