@@ -4,7 +4,8 @@ import bert
 if __name__ == "__main__":
 
     cfg_json_list = [
-        "config/uda/imdb_20.json",
+        "config/uda/imdb_20_uda.json",
+        "config/uda/imdb_20_no_uda.json",
         ]
 
     for cfg_json in cfg_json_list:

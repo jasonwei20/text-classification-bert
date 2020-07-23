@@ -45,6 +45,7 @@ class uda_config(NamedTuple):
     eval_interval: int = 10
 
     # uda
+    uda_mode: str = None
     uda_train_batch_size: int = None
     uda_ul_batch_size: int = None
     val_batch_size: int = 64

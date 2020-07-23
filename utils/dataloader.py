@@ -3,11 +3,10 @@ from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 from torch.utils.data import TensorDataset
 from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
-from utils import common, configuration
+from utils import common, configuration, eda
 from transformers import BertTokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
-#refactor this
 def get_tensor_dataset(sentences, labels, cfg):
 
     encoding_dictionary = tokenizer(
@@ -58,12 +57,42 @@ def get_test_dataloader(cfg):
 
     return dataloader
 
+#############################
+############ UDA ############
+#############################
+
+def get_tensor_uda_dataset(ul_orig_sentences, ul_aug_sentences, cfg):
+
+    orig_encoding_dictionary = tokenizer(
+        ul_orig_sentences, 
+        max_length = cfg.max_length,
+        padding = 'max_length',
+        truncation = True,
+        return_tensors = 'pt',
+    )
+    orig_input_ids_torch = orig_encoding_dictionary['input_ids']
+    orig_attention_masks_torch = orig_encoding_dictionary['attention_mask']
+
+    aug_encoding_dictionary = tokenizer(
+        ul_aug_sentences, 
+        max_length = cfg.max_length,
+        padding = 'max_length',
+        truncation = True,
+        return_tensors = 'pt',
+    )
+    aug_input_ids_torch = aug_encoding_dictionary['input_ids']
+    aug_attention_masks_torch = aug_encoding_dictionary['attention_mask']
+
+    dataset = TensorDataset(orig_input_ids_torch, orig_attention_masks_torch, aug_input_ids_torch, aug_attention_masks_torch)
+
+    return dataset
+
 def get_train_uda_dataloader(cfg):
     
     sentences, labels = common.get_sentences_and_labels_from_txt(cfg.train_path)
     sentences, labels = shuffle(sentences, labels, random_state = cfg.seed_num)
-    train_sentences, ul_orig_sentences, train_labels, ul_labels = train_test_split(sentences, labels, train_size = cfg.train_subset, random_state=cfg.seed_num, stratify=labels) 
-    #get augmented sentences
+    train_sentences, ul_orig_sentences, train_labels, _ = train_test_split(sentences, labels, train_size = cfg.train_subset, random_state=cfg.seed_num, stratify=labels) 
+    ul_aug_sentences = eda.get_swap_sentences(ul_orig_sentences)
 
     train_dataset = get_tensor_dataset(train_sentences, train_labels, cfg)
     train_dataloader = DataLoader(
@@ -72,8 +101,7 @@ def get_train_uda_dataloader(cfg):
         batch_size = cfg.uda_train_batch_size,
     )
 
-    #redo this:
-    ul_dataset = get_tensor_dataset(ul_sentences, ul_labels, cfg)
+    ul_dataset = get_tensor_uda_dataset(ul_orig_sentences, ul_aug_sentences, cfg)
     ul_dataloader = DataLoader(
         ul_dataset, 
         sampler = RandomSampler(ul_dataset), 

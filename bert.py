@@ -2,6 +2,7 @@ from pathlib import Path
 import numpy as np
 from sklearn.metrics import accuracy_score
 import torch
+import torch.nn.functional as F
 from transformers import BertForSequenceClassification
 from transformers import BertConfig, AdamW
 from transformers import get_linear_schedule_with_warmup
@@ -127,7 +128,7 @@ def uda_bert(
     ul_dataloader = common.repeat_dataloader(ul_dataloader)
 
     model, optimizer, scheduler, device = initialize_model(cfg, train_dataloader)
-    eval_update_list = []; train_loss_list = []; val_acc_list = []
+    eval_update_list = []; train_loss_list = []; ul_loss_list = []; val_acc_list = []
 
     iter_bar = tqdm(ul_dataloader, total = cfg.total_updates)
 
@@ -138,16 +139,33 @@ def uda_bert(
         train_input_mask = train_mb[1].to(device)
         train_labels = train_mb[2].to(device)
 
-        ul_input_ids = ul_mb[0].to(device)
-        ul_input_mask = ul_mb[1].to(device)
+        ul_orig_input_ids = ul_mb[0].to(device)
+        ul_orig_input_mask = ul_mb[1].to(device)
+        ul_aug_input_ids = ul_mb[2].to(device)
+        ul_aug_input_mask = ul_mb[3].to(device)
+
+        combined_input_ids = torch.cat([train_input_ids, ul_orig_input_ids, ul_aug_input_ids])
+        combined_input_masks = torch.cat([train_input_mask, ul_orig_input_mask, ul_aug_input_mask])
 
         model.train()
         model.zero_grad()
 
-        train_loss, train_logits = model(train_input_ids, attention_mask=train_input_mask, labels=train_labels)
+        combined_logits = model(combined_input_ids, attention_mask=combined_input_masks)[0]
+
+        train_logits = combined_logits[:len(train_input_ids)]
+        train_loss = torch.nn.CrossEntropyLoss()(input=train_logits, target=train_labels)
         train_confs, train_preds = torch.max(train_logits, dim=1)
         mb_train_acc = accuracy_score(train_labels.cpu(), train_preds.cpu())
         
+        ul_orig_logits, ul_aug_logits = torch.chunk(combined_logits[len(train_input_ids):], 2)
+        ul_orig_probs = torch.softmax(ul_orig_logits, dim=-1)
+        ul_aug_log_probs = torch.log_softmax(ul_aug_logits, dim=-1)
+        ul_loss = torch.sum( F.kl_div(ul_aug_log_probs, ul_orig_probs, reduction='none'), dim=-1 )
+        ul_loss = torch.mean(ul_loss)
+        
+        combined_loss = train_loss
+        if cfg.uda_mode == "vanilla_uda":
+            combined_loss += ul_loss
         train_loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
@@ -160,15 +178,17 @@ def uda_bert(
 
             iter_bar_str =  (f"update {update_num}/{cfg.total_updates}: " 
                             + f"mb_train_loss={float(train_loss):.4f}, "  
+                            + f"mb_ul_loss={float(ul_loss):.4f}, "  
                             + f"mb_train_acc={float(mb_train_acc):.3f}, "  
                             + f"val_acc={float(val_acc):.3f} ")
             iter_bar.set_description(iter_bar_str)
 
-            eval_update_list.append(update_num); train_loss_list.append(train_loss); val_acc_list.append(val_acc)
+            eval_update_list.append(update_num); train_loss_list.append(train_loss); val_acc_list.append(val_acc); ul_loss_list.append(ul_loss)
 
         if update_num == cfg.total_updates:
             break
     
     Path(f"plots/{cfg.exp_id}").mkdir(parents=True, exist_ok=True)
-    visualization.plot_jasons_lineplot(eval_update_list, train_loss_list, 'updates', 'training loss', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset}", f"plots/{cfg.exp_id}/train_loss.png")
+    visualization.plot_jasons_lineplot(eval_update_list, train_loss_list, 'updates', 'supervised loss', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset}", f"plots/{cfg.exp_id}/train_loss.png")
+    visualization.plot_jasons_lineplot(eval_update_list, ul_loss_list, 'updates', 'unsupervised loss', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset}", f"plots/{cfg.exp_id}/unsup_loss.png")
     visualization.plot_jasons_lineplot(eval_update_list, val_acc_list, 'updates', 'validation accuracy', f"{cfg.train_path.split('/')[-2]} n_train={cfg.train_subset} max_val_acc={max(val_acc_list):.3f}", f"plots/{cfg.exp_id}/val_acc.png")

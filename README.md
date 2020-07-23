@@ -13,25 +13,30 @@ Train a text classifier with pre-trained BERT, and then easily adapt it new expe
 
 What you can do with this repo:
 - Fine-tune BERT for your downstream text classification task.
+- View training loss and validation accuracy using tqdm while your model is training.
 - Plot training loss and validation accuracy.
 - Run experiments for using subsets of your data.
 - Easily adapt it to your own experiments, with minimal changes. 
-
-## Experiments
-```
-python main.py
-```
-
-If you open an issue before September 31, I will reply.
-
-This code is absolutely beautiful. It's written to the perfect level of abstraction for the amateur NLP researcher. In fact, I wouldn't even call it code. It's *poetry*. 
 
 ## Dependencies
 ```
 pip install pytorch transformers matplotlib sklearn
 ```
 
-## To do
+## Experiments
+
+Fine-tune BERT for SST-2, SUBJ, TREC, and IMDB: 
+```
+python vanilla_train_eval.py
+```
+
+## Notes
+
+If you open an issue before September 31, I will reply.
+
+This code is absolutely beautiful. It's written to the perfect level of abstraction for the amateur NLP researcher. In fact, I wouldn't even call it code. It's *poetry*. 
+
+### To do
 - Understand what's going on with the learning rate.
 - Add saving and loading models.
 - Add where to get data from.
