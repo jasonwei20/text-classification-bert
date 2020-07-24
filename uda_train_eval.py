@@ -4,7 +4,9 @@ import bert
 if __name__ == "__main__":
 
     cfg_json_list = [
-        "config/uda/imdb_20_uda.json",
+        "config/uda/imdb_20_uda_backtranslation.json",
+        "config/uda/imdb_20_uda_sr.json",
+        "config/uda/imdb_20_uda_swaps.json",
         "config/uda/imdb_20_no_uda.json",
         ]
 

@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import torch
+import pickle
 
 def set_random_seed(seed_num):
 
@@ -25,3 +26,13 @@ def repeat_dataloader(iterable):
     while True:
         for x in iterable:
             yield x
+
+######### pickle
+
+def save_pickle(filepath, x):
+    with open(filepath, 'wb') as handle:
+        pickle.dump(x, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+def load_pickle(filepath):
+    with open(filepath, 'rb') as handle:
+        return pickle.load(handle)

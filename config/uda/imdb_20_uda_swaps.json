@@ -1,0 +1,14 @@
+{
+    "exp_id": "imdb_20_uda_swaps",
+    "train_path": "data/imdb/train.txt",
+    "test_path": "data/imdb/test.txt",
+    "num_output_classes": 2,
+    "total_updates": 10000,
+    "train_subset": 20,
+    "val_subset": 500,
+    "max_length": 128,
+    "uda_train_batch_size": 8,
+    "uda_ul_batch_size": 24,
+    "uda_mode": "vanilla_uda",
+    "uda_augmentation": "token_swaps"
+}

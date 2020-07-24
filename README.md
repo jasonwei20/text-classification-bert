@@ -40,7 +40,6 @@ This code is absolutely beautiful. It's written to the perfect level of abstract
 - Understand what's going on with the learning rate.
 - Add saving and loading models.
 - Add where to get data from.
-- Support multiple GPUs.
 - Support experiments with multiple random seeds.
 - Get rid of annoying warning log (I know that you have to train BertForSequenceClassification).
 - Consistency training with [UDA](https://github.com/SanghunYun/UDA_pytorch)
