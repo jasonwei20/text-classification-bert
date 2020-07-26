@@ -202,11 +202,11 @@ def get_backtrans_sentences(sentences, cfg):
 # master augment method that takes in cfg
 ########################################################################
 
-def get_augmented_sentences(sentences, cfg):
+def get_augmented_sentences(sentences, cfg, augmentation_type):
 
-    if cfg.uda_augmentation == "token_swaps":
+    if augmentation_type == "token_swaps":
         return get_swap_sentences(sentences)
-    elif cfg.uda_augmentation == "backtranslation":
+    elif augmentation_type == "backtranslation":
         return get_backtrans_sentences(sentences, cfg)
-    elif cfg.uda_augmentation == "synonym_replacement":
+    elif augmentation_type == "synonym_replacement":
         return get_synonym_replacement_sentences(sentences, cfg)

@@ -57,6 +57,19 @@ def get_test_dataloader(cfg):
 
     return dataloader
 
+##############################
+#### Vanilla Augmentation ####
+##############################
+
+def get_augmented_train_dataloader(cfg):
+
+    sentences, labels = common.get_sentences_and_labels_from_txt(cfg.train_path)
+    sentences, labels = shuffle(sentences, labels, random_state = cfg.seed_num)
+    if cfg.train_subset:
+        sentences, _, labels, _ = train_test_split(sentences, labels, train_size = cfg.train_subset, random_state=cfg.seed_num, stratify=labels) 
+    
+
+
 #############################
 ############ UDA ############
 #############################
@@ -92,7 +105,7 @@ def get_train_uda_dataloader(cfg):
     sentences, labels = common.get_sentences_and_labels_from_txt(cfg.train_path)
     sentences, labels = shuffle(sentences, labels, random_state = cfg.seed_num)
     train_sentences, ul_orig_sentences, train_labels, _ = train_test_split(sentences, labels, train_size = cfg.train_subset, random_state=cfg.seed_num, stratify=labels) 
-    ul_aug_sentences = augmentation.get_augmented_sentences(ul_orig_sentences, cfg)
+    ul_aug_sentences = augmentation.get_augmented_sentences(ul_orig_sentences, cfg, augmentation_type=cfg.uda_augmentation)
 
     train_dataset = get_tensor_dataset(train_sentences, train_labels, cfg)
     train_dataloader = DataLoader(

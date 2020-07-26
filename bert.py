@@ -135,14 +135,11 @@ def uda_bert(
     for update_num, ul_mb in enumerate(iter_bar):
 
         train_mb = next(train_dataloader)
-        train_input_ids = train_mb[0].to(device)
-        train_input_mask = train_mb[1].to(device)
+        train_input_ids = train_mb[0].to(device); train_input_mask = train_mb[1].to(device)
         train_labels = train_mb[2].to(device)
 
-        ul_orig_input_ids = ul_mb[0].to(device)
-        ul_orig_input_mask = ul_mb[1].to(device)
-        ul_aug_input_ids = ul_mb[2].to(device)
-        ul_aug_input_mask = ul_mb[3].to(device)
+        ul_orig_input_ids = ul_mb[0].to(device); ul_orig_input_mask = ul_mb[1].to(device)
+        ul_aug_input_ids = ul_mb[2].to(device); ul_aug_input_mask = ul_mb[3].to(device)
 
         combined_input_ids = torch.cat([train_input_ids, ul_orig_input_ids, ul_aug_input_ids])
         combined_input_masks = torch.cat([train_input_mask, ul_orig_input_mask, ul_aug_input_mask])
