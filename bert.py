@@ -52,7 +52,7 @@ def evaluate_model(
 
         with torch.no_grad():
 
-            val_loss, logits = model(input_ids, attention_mask=input_mask, labels=labels)
+            logits = model(input_ids, attention_mask=input_mask)[0]
             val_confs, val_preds = torch.max(logits, dim=1)
 
             val_preds = val_preds.detach().cpu().numpy()

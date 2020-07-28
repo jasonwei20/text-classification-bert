@@ -210,3 +210,5 @@ def get_augmented_sentences(sentences, cfg, augmentation_type):
         return get_backtrans_sentences(sentences, cfg)
     elif augmentation_type == "synonym_replacement":
         return get_synonym_replacement_sentences(sentences, cfg)
+    elif augmentation_type == "all_augmentation":
+        return get_swap_sentences(sentences), get_backtrans_sentences(sentences, cfg), get_synonym_replacement_sentences(sentences, cfg)

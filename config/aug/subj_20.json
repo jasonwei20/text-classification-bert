@@ -1,0 +1,9 @@
+{
+    "exp_id": "subj_20_vanilla_aug",
+    "train_path": "data/subj/train.txt",
+    "test_path": "data/subj/test.txt",
+    "num_output_classes": 2, 
+    "num_epochs": 100,
+    "eval_interval": 3,
+    "train_subset": 20
+}

@@ -68,7 +68,32 @@ def get_augmented_train_dataloader(cfg):
     if cfg.train_subset:
         sentences, _, labels, _ = train_test_split(sentences, labels, train_size = cfg.train_subset, random_state=cfg.seed_num, stratify=labels) 
     
+    swap_sentences, backtrans_sentences, sr_sentences = augmentation.get_augmented_sentences(sentences, cfg, "all_augmentation")
+    all_labels = labels + labels
+    all_sentences = sentences + swap_sentences #sentences + swap_sentences + backtrans_sentences + sr_sentences
+    augmentation_labels = [0 for _ in range(len(labels))] + [1 for _ in range(len(labels))]# + [2 for _ in range(len(labels))] + [3 for _ in range(len(labels))]
+    
+    encoding_dictionary = tokenizer(
+        all_sentences, 
+        max_length = cfg.max_length,
+        padding = 'max_length',
+        truncation = True,
+        return_tensors = 'pt',
+    )
 
+    input_ids_torch = encoding_dictionary['input_ids']
+    attention_masks_torch = encoding_dictionary['attention_mask']
+    labels_torch = torch.tensor(all_labels)
+    aug_labels_torch = torch.tensor(augmentation_labels)
+
+    dataset = TensorDataset(input_ids_torch, attention_masks_torch, labels_torch, aug_labels_torch)
+    dataloader = DataLoader(
+        dataset, 
+        sampler = RandomSampler(dataset), 
+        batch_size = cfg.batch_size,
+    )
+
+    return dataloader
 
 #############################
 ############ UDA ############
