@@ -3,7 +3,7 @@
     "train_path": "data/subj/train.txt",
     "test_path": "data/subj/test.txt",
     "num_output_classes": 2, 
-    "num_epochs": 100,
+    "num_epochs": 200,
     "eval_interval": 3,
     "train_subset": 20
 }

@@ -50,6 +50,7 @@ class uda_config(NamedTuple):
     uda_ul_batch_size: int = None
     val_batch_size: int = 64
     uda_augmentation: str = None #"token_swaps", "backtranslation", "synonym_replacement"
+    sharpen: float = 0.85
 
     @classmethod
     def from_json(cls, file_path):

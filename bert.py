@@ -156,7 +156,7 @@ def uda_bert(
         
         ul_orig_logits, ul_aug_logits = torch.chunk(combined_logits[len(train_input_ids):], 2)
         ul_orig_probs = torch.softmax(ul_orig_logits, dim=-1)
-        ul_aug_log_probs = torch.log_softmax(ul_aug_logits, dim=-1)
+        ul_aug_log_probs = torch.log_softmax(ul_aug_logits / cfg.sharpen, dim=-1)
         ul_loss = torch.sum( F.kl_div(ul_aug_log_probs, ul_orig_probs, reduction='none'), dim=-1 )
         ul_loss = torch.mean(ul_loss)
         
