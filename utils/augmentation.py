@@ -133,7 +133,7 @@ def get_synonyms(word):
 		synonyms.remove(word)
 	return list(synonyms)
 
-def get_sr_sentence(sentence, alpha=0.1):
+def get_sr_sentence(sentence, alpha=0.4):
     
     sentence = get_only_chars(sentence)
     words = sentence.split(' ')
@@ -164,7 +164,7 @@ def get_sr_data_dict(pkl_path, train_path):
 
 def get_synonym_replacement_sentences(sentences, cfg):
 
-    pkl_path = Path(cfg.train_path).parent.joinpath(f"train_aug_sr_data.pkl")
+    pkl_path = Path(cfg.train_path).parent.joinpath(f"train_aug_sr04_data.pkl")
     sentence_to_aug_sentence = get_sr_data_dict(pkl_path, cfg.train_path)
     return [sentence_to_aug_sentence[sentence] for sentence in sentences]
 

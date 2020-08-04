@@ -8,6 +8,8 @@ from transformers import BertConfig, AdamW
 from transformers import get_linear_schedule_with_warmup
 from tqdm import tqdm
 from utils import common, configuration, dataloader, utils_torch, visualization
+from transformers import BertTokenizer
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
 
 def initialize_model(
     cfg,
@@ -137,6 +139,12 @@ def uda_bert(
         train_mb = next(train_dataloader)
         train_input_ids = train_mb[0].to(device); train_input_mask = train_mb[1].to(device)
         train_labels = train_mb[2].to(device)
+
+        ul_orig_ids = ul_mb[0][0]
+        ul_orig_tokens = ' '.join(tokenizer.convert_ids_to_tokens(ul_orig_ids))
+        ul_aug_ids = ul_mb[2][0]
+        ul_aug_tokens = ' '.join(tokenizer.convert_ids_to_tokens(ul_aug_ids))
+        # print(ul_orig_tokens[:100], '\t', ul_aug_tokens[:100])
 
         ul_orig_input_ids = ul_mb[0].to(device); ul_orig_input_mask = ul_mb[1].to(device)
         ul_aug_input_ids = ul_mb[2].to(device); ul_aug_input_mask = ul_mb[3].to(device)

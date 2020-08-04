@@ -2,4 +2,4 @@ data/*
 **/__pycache__
 plots/*
 .vscode/*
-temp/*
+temp/*.txt

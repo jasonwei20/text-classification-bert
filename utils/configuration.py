@@ -42,7 +42,7 @@ class uda_config(NamedTuple):
     train_subset: int = None
     val_subset: int = 1000
     total_updates: int = 10000
-    eval_interval: int = 10
+    eval_interval: int = 20
 
     # uda
     uda_mode: str = None
@@ -51,6 +51,7 @@ class uda_config(NamedTuple):
     val_batch_size: int = 64
     uda_augmentation: str = None #"token_swaps", "backtranslation", "synonym_replacement"
     sharpen: float = 0.85
+    preloaded_data: str = None
 
     @classmethod
     def from_json(cls, file_path):

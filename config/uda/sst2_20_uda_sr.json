@@ -1,0 +1,14 @@
+{
+    "exp_id": "sst2_20_uda_sr",
+    "train_path": "data/sst2/train.txt",
+    "test_path": "data/sst2/test.txt",
+    "num_output_classes": 2,
+    "total_updates": 10000,
+    "train_subset": 20,
+    "val_subset": 500,
+    "max_length": 64,
+    "uda_train_batch_size": 8,
+    "uda_ul_batch_size": 24,
+    "uda_mode": "vanilla_uda",
+    "uda_augmentation": "synonym_replacement"
+}
